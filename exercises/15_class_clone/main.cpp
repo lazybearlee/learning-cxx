@@ -7,20 +7,30 @@
 class DynFibonacci {
     size_t *cache;
     int cached;
+    int capacity;
 
 public:
-    // TODO: 实现动态设置容量的构造器
-    DynFibonacci(int capacity): cache(new ?), cached(?) {}
+    DynFibonacci(int capacity): cache(new size_t[capacity]{0, 1}), cached(2), capacity(capacity) {}
 
-    // TODO: 实现复制构造器
-    DynFibonacci(DynFibonacci const &) = delete;
+    // DynFibonacci(DynFibonacci const &) = delete;这是 C++11 引入的特性。它的意思是：禁止复制这个类。
+    // 有些资源（如文件句柄、独占锁）是不应该被复制的。
+    DynFibonacci(DynFibonacci const &other) {
+        // 实现深拷贝
+        // 1. 分配新的内存
+        // 2. 复制内容
+        cache = new size_t[this->capacity];
+        for (int i = 0; i < other.cached; ++i) {
+            cache[i] = other.cache[i];
+        }
+        cached = other.cached;
+    };
 
-    // TODO: 实现析构器，释放缓存空间
-    ~DynFibonacci();
+    ~DynFibonacci() {
+        delete[] cache;
+    }
 
-    // TODO: 实现正确的缓存优化斐波那契计算
     size_t get(int i) {
-        for (; false; ++cached) {
+        for (; cached <= i; ++cached) {
             cache[cached] = cache[cached - 1] + cache[cached - 2];
         }
         return cache[i];

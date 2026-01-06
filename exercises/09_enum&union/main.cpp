@@ -36,10 +36,27 @@ ColorEnum convert_by_pun(Color c) {
     };
 
     TypePun pun;
-    // TODO: 补全类型双关转换
+    // 内存示意（4 字节）：
+    // [Byte 0] [Byte 1] [Byte 2] [Byte 3]
+    //    ↓
+    //  e 的值        （只用 1 字节）
+    //    ↓           ↓           ↓           ↓
+    //  c 的值（整个 4 字节都用）
+    pun.c = c; 
 
     return pun.e;
 }
+
+// 更安全的做法：强制类型转换
+// ColorEnum convert_safe(Color c) {
+//     return static_cast<ColorEnum>(static_cast<int>(c));
+// }
+
+// // 最现代的做法：std::bit_cast（C++20）
+// #include <bit>
+// ColorEnum convert_modern(Color c) {
+//     return std::bit_cast<ColorEnum>(c);
+// }
 
 int main(int argc, char **argv) {
     ASSERT(convert_by_pun(Color::Red) == COLOR_RED, "Type punning conversion");
